@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
-    //movement
-    //only the movespeed itself will be overloaded
-    public float moveSpeed;
-    private float rootTwo = Mathf.Sqrt(2);
+    public float moveSpeed; //this should be overridden
+    public bool amPlayer; //if so, don't receive AI commands
 
+    //movement if this character is possessed by the player
+    void MovePlayer()
+    {
+        Vector3 myVect = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+        transform.Translate(myVect * moveSpeed * Time.deltaTime);
+    }
+
+    //insert a bunch of functions to receive from the AI controller
+    //movement if this character is not possessed by the player
+    /*
     void MoveForwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
     void MoveBackwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
     void MoveRight() {transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);}
@@ -17,6 +25,7 @@ public class CharacterScript : MonoBehaviour
     void MoveForwardsLeft() {transform.Translate(new Vector3(rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
     void MoveBackwardsRight() {transform.Translate(new Vector3(-rootTwo, rootTwo, 0) * moveSpeed * Time.deltaTime);}
     void MoveBackwardsLeft() {transform.Translate(new Vector3(-rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
+    */
 
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() {}

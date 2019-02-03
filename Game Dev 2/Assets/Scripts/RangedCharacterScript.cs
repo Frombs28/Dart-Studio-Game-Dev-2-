@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RangedCharacterScript : CharacterScript
 {
+    //remember to override movespeed in the inspector!
     public override void Attack()
     {
         base.Attack();
