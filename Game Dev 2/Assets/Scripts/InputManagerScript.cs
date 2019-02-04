@@ -8,11 +8,10 @@ public class InputManagerScript : MonoBehaviour
 
     private void Update()
     {
-        //player mouse control
-        if (player) { player.SendMessage("MouseLook"); }
 
         //player movement
         if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0 && player) { player.SendMessage("MovePlayer"); }
+        if (player) { player.SendMessage("RotatePlayer"); }
 
         //attack and traversal ability
         //at this point these are just proof of concept
