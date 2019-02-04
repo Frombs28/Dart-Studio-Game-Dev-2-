@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  mouseSpeed: 3
+  amPlayer: 0
 --- !u!135 &135377632878562124
 SphereCollider:
   m_ObjectHideFlags: 1

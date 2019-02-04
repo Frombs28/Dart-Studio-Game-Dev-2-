@@ -109,3 +109,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 20
+  mouseSpeed: 3
+  amPlayer: 0

@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterScript : MonoBehaviour
 {
     public float moveSpeed; //this should be overridden
+    public float mouseSpeed; //look sensitivity
     public bool amPlayer; //if so, don't receive AI commands
 
     //movement if this character is possessed by the player
@@ -12,6 +13,15 @@ public class CharacterScript : MonoBehaviour
     {
         Vector3 myVect = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
         transform.Translate(myVect * moveSpeed * Time.deltaTime);
+    }
+
+    //this will always fire as long as the player is possessing this character
+    void MouseLook()
+    {
+        Vector2 myVect = new Vector2(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"));
+        transform.eulerAngles = (Vector2)myVect * mouseSpeed;
+        Debug.Log("yo wtf m8");
+        //turns out this doesn't work haha whoops
     }
 
     //insert a bunch of functions to receive from the AI controller
