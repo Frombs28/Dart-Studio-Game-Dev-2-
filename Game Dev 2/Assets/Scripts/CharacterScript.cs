@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterScript : MonoBehaviour
 {
     public float moveSpeed; //this should be overridden
-    public bool amPlayer; //if so, don't receive AI commands
+    //public bool amPlayer; //if so, don't receive AI commands
     public Camera cam; //player character rotation based on camera rotation
 
     //movement if this character is possessed by the player
