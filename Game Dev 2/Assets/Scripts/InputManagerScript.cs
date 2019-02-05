@@ -7,9 +7,15 @@ public class InputManagerScript : MonoBehaviour
     public GameObject player; //whoms't'd've'ever is possessed rn
     public List<GameObject> cams = new List<GameObject>();
 
-    public void AssignPlayer(GameObject myPlayer) { player = myPlayer; }
+    public void AssignPlayer(GameObject myPlayer)
+    {
+        player = myPlayer;
+    }
 
-    public void PopulateCamList(GameObject myCam) { cams.Add(myCam); }
+    public void PopulateCamList(GameObject myCam)
+    {
+        cams.Add(myCam);
+    }
 
     private void Update()
     {
@@ -23,5 +29,6 @@ public class InputManagerScript : MonoBehaviour
         else if (Input.GetAxis("TraversalAbility") != 0 && player) { player.SendMessage("TraversalAbility"); }
 
         //possession
+        //I'M SO CLOSE TO BEING ABLE TO IMPLEMENT THIS I SWEAR TO GOD
     }
 }

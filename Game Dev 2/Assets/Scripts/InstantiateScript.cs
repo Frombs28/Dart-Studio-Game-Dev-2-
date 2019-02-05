@@ -5,13 +5,8 @@ using Cinemachine;
 
 public class InstantiateScript : MonoBehaviour
 {
-    //don't worry about events rn, just plop some bois and cams down and maybe some more after some time has passed, as a proof of concept
-    //give your cameras to the input manager
-    //give the player to the input manager
-    //do this in Start()
 
     public GameObject inputManager;
-    public GameObject camPrefab;
     public GameObject meleePrefab;
     public GameObject rangedPrefab;
 
@@ -21,34 +16,34 @@ public class InstantiateScript : MonoBehaviour
 
     private void Start()
     {
-        myCharacter = Instantiate(meleePrefab, new Vector3(0, 2, 0), Quaternion.identity);
+        InstantiateCharacter(meleePrefab, new Vector3(0, 2, 0), true);
+        InstantiateCharacter(rangedPrefab, new Vector3(5, 2, 5), false);
+    }
 
-        myCam = Instantiate(camPrefab, myCharacter.transform);
-        vCam = myCam.GetComponent<CinemachineVirtualCamera>();
+    private void InstantiateCharacter(GameObject myPrefab, Vector3 myPos, bool isPlayer)
+    {
+        myCharacter = Instantiate(myPrefab, myPos, Quaternion.identity);
+        myCam = new GameObject("VirtualCamera"); //it needs to be a freelook camera
+        myCam.AddComponent<CamScript>();
+        vCam = myCam.AddComponent<CinemachineVirtualCamera>();
         vCam.m_LookAt = myCharacter.transform;
         vCam.m_Follow = myCharacter.transform;
+        myCharacter.SendMessage("AssignCamera", myCam);
+        /*
+        var transposer = vCam.GetCinemachineComponent<CinemachineTransposer>();
+        transposer.m_ScreenX = 0.4; //idk if this is even real //update it's not //or at least it's not under "transposer"
+        */
 
-        inputManager.SendMessage("AssignPlayer", myCharacter);
-        myCam.SendMessage("Activate");
+        if (isPlayer)
+        {
+            inputManager.SendMessage("AssignPlayer", myCharacter);
+            myCam.SendMessage("Activate");
+            //do something to assign the Main Camera to the virtual camera
+        }
+        else
+        {
+            myCam.SendMessage("DeActivate");
+        }
         inputManager.SendMessage("PopulateCamList", myCam);
-
-        myCharacter = Instantiate(rangedPrefab, new Vector3(0, 2, 0), Quaternion.identity);
-
-        myCam = Instantiate(camPrefab, myCharacter.transform);
-        vCam = myCam.GetComponent<CinemachineVirtualCamera>();
-        vCam.m_LookAt = myCharacter.transform;
-        vCam.m_Follow = myCharacter.transform;
-
-        inputManager.SendMessage("PopulateCamList", myCam);
-        myCam.SendMessage("DeActivate");
-        //do i pass in myCam or vCam???
-        //do i have the prefab be an actual camera or a virtual camera???
-        //if it works with a virtual camera, do that. if not, create the virtual camera and set the fov and screenxoffset in code
-
-        //your problem is that you instantiate an object and then try to get a reference to it in the same frame, before it had time to instantiate.
-        //well, what are you doing here that you could be doing in myCharacter's Awake()???
-        //nah man i'm just trying to access the transform so i can assign my vCam to it
-        //i could try to do that from vCam but then vCam needs a reference to myCharacter
-
     }
 }
