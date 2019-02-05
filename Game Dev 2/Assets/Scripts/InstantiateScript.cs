@@ -5,13 +5,13 @@ using Cinemachine;
 
 public class InstantiateScript : MonoBehaviour
 {
-
     public GameObject inputManager;
     public GameObject meleePrefab;
     public GameObject rangedPrefab;
+    public GameObject camPrefab;
 
     private GameObject myCam;
-    private CinemachineVirtualCamera vCam;
+    private CinemachineFreeLook vCam;
     private GameObject myCharacter;
 
     private void Start()
@@ -23,22 +23,15 @@ public class InstantiateScript : MonoBehaviour
     private void InstantiateCharacter(GameObject myPrefab, Vector3 myPos, bool isPlayer)
     {
         myCharacter = Instantiate(myPrefab, myPos, Quaternion.identity);
-        myCam = new GameObject("VirtualCamera"); //it needs to be a freelook camera
-        myCam.AddComponent<CamScript>();
-        vCam = myCam.AddComponent<CinemachineVirtualCamera>();
+        myCam = Instantiate(camPrefab, myCharacter.transform);
+        vCam = myCam.GetComponent<CinemachineFreeLook>();
         vCam.m_LookAt = myCharacter.transform;
         vCam.m_Follow = myCharacter.transform;
-        myCharacter.SendMessage("AssignCamera", myCam);
-        /*
-        var transposer = vCam.GetCinemachineComponent<CinemachineTransposer>();
-        transposer.m_ScreenX = 0.4; //idk if this is even real //update it's not //or at least it's not under "transposer"
-        */
 
         if (isPlayer)
         {
             inputManager.SendMessage("AssignPlayer", myCharacter);
             myCam.SendMessage("Activate");
-            //do something to assign the Main Camera to the virtual camera
         }
         else
         {
