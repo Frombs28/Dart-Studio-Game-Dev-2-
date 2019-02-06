@@ -21,6 +21,13 @@ public class InputManagerScript : MonoBehaviour
         cams.Add(myCam);
     }
 
+
+    public void tookdamage()
+    {
+        playerhealth -= 1;
+        player.SendMessage("TakeDamage");
+    }
+
     private void Update()
     {
         //player movement

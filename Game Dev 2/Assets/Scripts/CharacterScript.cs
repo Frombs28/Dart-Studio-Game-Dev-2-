@@ -8,6 +8,23 @@ public class CharacterScript : MonoBehaviour
     //public bool amPlayer; //if so, don't receive AI commands
     public Camera cam; //player character rotation based on camera rotation //this is the MAIN CAMERA, not your person VIRTUAL CAMERA
 
+
+    private int enemyhealth;
+
+    public int Enemyhealth
+    {
+        get
+        {
+            return enemyhealth;
+        }
+        set
+        {
+            enemyhealth = value;
+        }
+    }
+
+   
+
     private void Start()
     {
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -43,4 +60,5 @@ public class CharacterScript : MonoBehaviour
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() {}
     public virtual void TraversalAbility() {}
+    public virtual void TakeDamage() => enemyhealth -=1;
 }
