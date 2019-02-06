@@ -5,7 +5,10 @@ using UnityEngine;
 public class InputManagerScript : MonoBehaviour
 {
     public GameObject player; //whoms't'd've'ever is possessed rn
+    public GameObject playerCam; //this is only public for debuggind and stuff
+    private Camera mainCam;
     public List<GameObject> cams = new List<GameObject>();
+    private bool possessing = false; //just a flag
 
     public void AssignPlayer(GameObject myPlayer)
     {
@@ -29,6 +32,24 @@ public class InputManagerScript : MonoBehaviour
         else if (Input.GetAxis("TraversalAbility") != 0 && player) { player.SendMessage("TraversalAbility"); }
 
         //possession
-        //I'M SO CLOSE TO BEING ABLE TO IMPLEMENT THIS I SWEAR TO GOD
+        //okay so it's saying that the sendmessages don't have recievers and idk why
+        if (Input.GetAxis("Possess") != 0 && player && !possessing)
+        {
+            mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
+            possessing = true;
+            playerCam = player.transform.Find("3rd Person Cam(Clone)").gameObject;
+            RaycastHit hit;
+            if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit))
+            {
+                if (hit.collider.gameObject.tag == "Possessable")
+                {
+                    Debug.Log("Did it!!!");
+                    playerCam.SendMessage("DeActivate");
+                    hit.collider.gameObject.SendMessage("ActivateCam");
+                    player = hit.collider.gameObject;
+                }
+            }
+            possessing = false;
+        }
     }
 }

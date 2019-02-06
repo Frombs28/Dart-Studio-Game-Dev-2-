@@ -27,6 +27,11 @@ public class CharacterScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
     }
 
+    public void ActivateCam()
+    {
+        transform.Find("3rd Person Cam(Clone)").gameObject.SendMessage("Activate");
+    }
+
     //insert a bunch of functions to receive from the AI controller
     //movement if this character is not possessed by the player
     /*
