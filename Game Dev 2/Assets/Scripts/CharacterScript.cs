@@ -6,7 +6,7 @@ public class CharacterScript : MonoBehaviour
 {
     public float moveSpeed; //this should be overridden
     //public bool amPlayer; //if so, don't receive AI commands
-    public Camera cam; //player character rotation based on camera rotation
+    public Camera cam; //player character rotation based on camera rotation //this is the MAIN CAMERA, not your person VIRTUAL CAMERA
 
     private void Start()
     {
@@ -25,11 +25,6 @@ public class CharacterScript : MonoBehaviour
     {
         //this isn't perfect but it works for now
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
-    }
-
-    public void ActivateCam()
-    {
-        transform.Find("3rd Person Cam(Clone)").gameObject.SendMessage("Activate");
     }
 
     //insert a bunch of functions to receive from the AI controller
