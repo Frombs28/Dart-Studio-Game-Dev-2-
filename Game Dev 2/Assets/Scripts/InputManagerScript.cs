@@ -15,6 +15,13 @@ public class InputManagerScript : MonoBehaviour
         //player.layer = 2; //ignore raycast //should probably eventually change to custom layer
         //^^^okay so apparently i can't get the raycast to go through this???
         //this is an problem
+            //okay experiment
+            //i'm gonna take off the melee boi's collider
+            //i also got rid of the layer mask entirely
+                //OKAY THAT ACTUALLY WORKED
+                //SO WHY ISN'T IT WORKING WITH A NORMAL LAYERMASK??????????
+
+                //THAT IS, IN FACT, THE QUESTION OF THE HOUR
     }
 
     public void PopulateCamList(GameObject myCam)
@@ -42,13 +49,15 @@ public class InputManagerScript : MonoBehaviour
             //do a raycast from the main camera
             mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
             RaycastHit hit;
+            int layerMask = 1 << 2;
+            layerMask = ~layerMask;
             
             if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit))//should probs give it a layer mask
             {
-                
+                Debug.Log("doin it");
                 if (hit.collider.gameObject.tag == "Possessable")
                 {
-                    Debug.Log("doin it");
+                    
                     //de-active that player's camera
                     player.transform.Find("VirtualCamera").gameObject.SetActive(false);
                     //set the player
