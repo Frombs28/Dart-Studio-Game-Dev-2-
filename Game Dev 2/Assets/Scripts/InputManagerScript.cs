@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManagerScript : MonoBehaviour
-{
+{   
     public GameObject player; //whoms't'd've'ever is possessed rn
     private Camera mainCam;
     public List<GameObject> cams = new List<GameObject>(); //might not actually use this lol whoops but let's hold onto it for now anyway
     private bool possessing = false; //just a flag
+    private int playerhealth=10;
 
     public void AssignPlayer(GameObject myPlayer)
     {

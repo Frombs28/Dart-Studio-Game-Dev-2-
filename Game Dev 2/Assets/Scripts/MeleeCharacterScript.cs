@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class MeleeCharacterScript : CharacterScript
 {
+    private int enemyhealth;
+
+    public int Enemyhealth
+    {
+        get
+        {
+            return enemyhealth;
+        }
+        set
+        {
+            enemyhealth = value;
+        }
+    }
+
     //remember to override movespeed in the inspector!
     public override void Attack()
     {
