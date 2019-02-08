@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+//spawns characters and assigns virtual cameras to them
+
 public class InstantiateScript : MonoBehaviour
 {
     public GameObject inputManager;
@@ -10,16 +12,18 @@ public class InstantiateScript : MonoBehaviour
     public GameObject rangedPrefab;
     //public GameObject camPrefab;
 
-    private GameObject myCam;
-    private CinemachineFreeLook vCam;
-    private GameObject myCharacter;
+    private GameObject myCam; //to be instantiated //the virtual camera game object that will be assigned to a character
+    private CinemachineFreeLook vCam; //to be instantiated //the component of the above virtual camera that handles settings
+    private GameObject myCharacter; //to be instantiated
 
     private void Start()
     {
+        //populate the scene with some characters
         InstantiateCharacter(meleePrefab, new Vector3(0, 2, 0), true);
         InstantiateCharacter(rangedPrefab, new Vector3(5, 2, 5), false);
     }
 
+    //makes a guy
     private void InstantiateCharacter(GameObject myPrefab, Vector3 myPos, bool isPlayer)
     {
         myCharacter = Instantiate(myPrefab, myPos, Quaternion.identity);
