@@ -517,28 +517,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cbe60da17a27494ca9a78c49aaa8234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Cinemachine.CinemachineBrain+BrainEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Cinemachine.CinemachineBrain+VcamEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  lookAt: {fileID: 0}
+  distance: 10
+  sensitivityX: 4
+  sensitivityY: 4
+  minY: -70
+  maxY: 70
 --- !u!1001 &617010203
 Prefab:
   m_ObjectHideFlags: 0
@@ -601,6 +588,11 @@ Prefab:
       value: 
       objectReference: {fileID: 1601424295008244, guid: f0dc149f6de23be47bb5b783ec136036,
         type: 2}
+    - target: {fileID: 114505133328061138, guid: 4d98a8263b0b0b6419dacdbfc10c4722,
+        type: 2}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 534669902}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d98a8263b0b0b6419dacdbfc10c4722, type: 2}
   m_IsPrefabAsset: 0

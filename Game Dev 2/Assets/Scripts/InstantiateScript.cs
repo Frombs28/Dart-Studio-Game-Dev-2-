@@ -10,10 +10,8 @@ public class InstantiateScript : MonoBehaviour
     public GameObject inputManager;
     public GameObject meleePrefab;
     public GameObject rangedPrefab;
-    //public GameObject camPrefab;
+    public GameObject cam; //the main camera //for now just set in the inspector might do it dynamically in a hot sec
 
-    private GameObject myCam; //to be instantiated //the virtual camera game object that will be assigned to a character
-    private CinemachineFreeLook vCam; //to be instantiated //the component of the above virtual camera that handles settings
     private GameObject myCharacter; //to be instantiated
 
     private void Start()
@@ -27,24 +25,10 @@ public class InstantiateScript : MonoBehaviour
     private void InstantiateCharacter(GameObject myPrefab, Vector3 myPos, bool isPlayer)
     {
         myCharacter = Instantiate(myPrefab, myPos, Quaternion.identity);
-        //myCam = Instantiate(camPrefab, myCharacter.transform);
-        myCam = new GameObject("VirtualCamera");
-        myCam.transform.SetParent(myCharacter.transform);
-            //you need to assign all sorts of setting here if you're not using a prefab
-        //vCam = myCam.GetComponent<CinemachineFreeLook>();
-        vCam = myCam.AddComponent<CinemachineFreeLook>();
-        vCam.m_LookAt = myCharacter.transform;
-        vCam.m_Follow = myCharacter.transform;
-
         if (isPlayer)
         {
             inputManager.SendMessage("AssignPlayer", myCharacter);
-            myCam.SetActive(true);
+            cam.SendMessage("AssignPlayer", myCharacter);
         }
-        else
-        {
-            myCam.SetActive(false);
-        }
-        inputManager.SendMessage("PopulateCamList", myCam);
     }
 }

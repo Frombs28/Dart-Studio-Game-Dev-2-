@@ -6,7 +6,6 @@ public class InputManagerScript : MonoBehaviour
 {   
     public GameObject player; //whoms't'd've'ever is possessed rn
     private Camera mainCam; //the main camera in the scene, which should usually be showing the player's POV
-    public List<GameObject> cams = new List<GameObject>(); //might not actually use this lol whoops but let's hold onto it for now anyway
     private bool possessing = false; //just a flag
     private int playerhealth=10;
 
@@ -20,12 +19,6 @@ public class InputManagerScript : MonoBehaviour
         player = myPlayer;
         player.layer = 2; //ignore raycast //should probably eventually change to custom layer
     }
-
-    public void PopulateCamList(GameObject myCam)
-    {
-        cams.Add(myCam);
-    }
-
 
     public void tookdamage() //plz capitalize every word in your function names as per the standard many thank
     {
@@ -61,14 +54,12 @@ public class InputManagerScript : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Possessable")
                 {
-                    //BTW transform.Find only works bc those virtual cameras are children of the character game objects
-                    //de-active the old player character's camera
-                    player.transform.Find("VirtualCamera").gameObject.SetActive(false);
                     //set the player to the new character
                     player.layer = 0; //i would put this in AssignPlayer but it's a hassle so do it here
                     AssignPlayer(hit.collider.gameObject);
-                    //activate the new player character's virtual camera
-                    player.transform.Find("VirtualCamera").gameObject.SetActive(true);
+                    //transition the camera
+                    mainCam.SendMessage("AssignPlayer", hit.collider.gameObject);
+                    //call an actual transition once you write one on the camera
                 }
             }
             //reset your flag
