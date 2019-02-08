@@ -6,7 +6,7 @@ public class InputManagerScript : MonoBehaviour
 {   
     public GameObject player; //whoms't'd've'ever is possessed rn
     private Camera mainCam; //the main camera in the scene, which should usually be showing the player's POV
-    private bool possessing = false; //just a flag
+    public bool receiveInput = true; //flag //set false by this script when i start possessing; set true by the camera (which sends a message to this) when the transition is complete
     private int playerhealth=10;
 
     //when the player possesses a character, this is called to set the new character to our variable "player," which is used in turn to call movement functions on whichever character the player is controlling
@@ -26,24 +26,28 @@ public class InputManagerScript : MonoBehaviour
         player.SendMessage("TakeDamage");
     }
 
+    public void SetReceiveInputTrue()
+    {
+        receiveInput = true;
+        //how incrdibly ad hoc
+    }
+
     private void Update()
     {
         //player movement
         //if the player is pressing the WASD keys, call a function on the CharacterScript of whatever character the player is controlling
-        if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0 && player) { player.SendMessage("MovePlayer"); }
-        if (player) { player.SendMessage("RotatePlayer"); }
+        if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) && player && receiveInput) { player.SendMessage("MovePlayer"); }
+        if (player && receiveInput) { player.SendMessage("RotatePlayer"); }
 
         //attack and traversal ability
         //if the player is pressing the appropriate keys, call a function on the CharacterScript of whatever character the player is controlling
-        if (Input.GetAxis("Attack") != 0 && player) { player.SendMessage("Attack"); }
-        else if (Input.GetAxis("TraversalAbility") != 0 && player) { player.SendMessage("TraversalAbility"); }
+        if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
+        else if (Input.GetAxis("TraversalAbility") != 0 && player && receiveInput) { player.SendMessage("TraversalAbility"); }
 
         //possession
         //if (Input.GetAxis("Possess") != 0 && player && !possessing)
-        if(Input.GetMouseButtonDown(1) && player && !possessing)
+        if(Input.GetMouseButtonDown(1) && player && receiveInput)
         {
-            //set your flag
-            possessing = true;
             //do a raycast from the main camera
             mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
             RaycastHit hit; //this will contain a path to a reference to whatever GameObject got hit
@@ -54,16 +58,15 @@ public class InputManagerScript : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Possessable")
                 {
+                    receiveInput = false;
                     //set the player to the new character
                     player.layer = 0; //i would put this in AssignPlayer but it's a hassle so do it here
                     AssignPlayer(hit.collider.gameObject);
                     //transition the camera
-                    mainCam.SendMessage("AssignPlayer", hit.collider.gameObject);
+                    mainCam.SendMessage("PossessionTransitionStarter", hit.collider.gameObject);
                     //call an actual transition once you write one on the camera
                 }
             }
-            //reset your flag
-            possessing = false;
         }
     }
 }

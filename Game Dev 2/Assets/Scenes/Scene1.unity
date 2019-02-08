@@ -520,12 +520,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cbe60da17a27494ca9a78c49aaa8234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookAt: {fileID: 0}
+  lookAtObject: {fileID: 0}
   distance: 10
   sensitivityX: 4
   sensitivityY: 4
+  offset: 10
+  lookOffset: 5
   minY: -70
   maxY: 70
+  transitioning: 0
+  newlookAtObject: {fileID: 0}
+  lerpSpeed: 50
+  lerpCurve: 5
+  inputManager: {fileID: 641148796}
 --- !u!1001 &617010203
 Prefab:
   m_ObjectHideFlags: 0
