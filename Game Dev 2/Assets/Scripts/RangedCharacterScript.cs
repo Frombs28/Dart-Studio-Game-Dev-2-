@@ -9,7 +9,7 @@ using UnityEngine;
 public class RangedCharacterScript : CharacterScript
 {
 
- 
+    GameObject player;
 
     //remember to set movespeed in the inspector!
     public override void Attack()
@@ -23,8 +23,35 @@ public class RangedCharacterScript : CharacterScript
         Debug.Log("ranged traversal!");
     }
 
-    private void Update()
+    // Use this for initialization
+    void Awake()
     {
-        
+        player = GameObject.Find("Player");
     }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        float y = transform.position.y;
+        Vector3 newpos = Vector3.MoveTowards(transform.position, player.transform.position, 5*Time.deltaTime);
+        newpos.y = y;
+        transform.LookAt(player.transform);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+        transform.position = newpos;
+
+    }
+    /* will use knockback if needed
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<CharacterScript>().TakeDamage(40);
+            Vector3 diff = transform.position - collision.gameObject.transform.position;
+            diff.Normalize();
+            diff.y = 0;
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(-3000*diff);
+        }
+    }
+    */
+   
 }
