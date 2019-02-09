@@ -8,6 +8,9 @@ using UnityEngine;
 
 public class RangedCharacterScript : CharacterScript
 {
+
+ 
+
     //remember to set movespeed in the inspector!
     public override void Attack()
     {
@@ -18,5 +21,10 @@ public class RangedCharacterScript : CharacterScript
     {
         base.TraversalAbility();
         Debug.Log("ranged traversal!");
+    }
+
+    private void Update()
+    {
+        
     }
 }
