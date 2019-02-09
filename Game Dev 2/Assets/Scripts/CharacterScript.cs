@@ -60,9 +60,13 @@ public class CharacterScript : MonoBehaviour
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
     public virtual void TraversalAbility() { }
-    public virtual void TakeDamage()
+    public virtual void TakeDamage(int damage)
     {
-        enemyhealth -= 1;
+        enemyhealth -= damage;
         print("hey it worked");
+        if (enemyhealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

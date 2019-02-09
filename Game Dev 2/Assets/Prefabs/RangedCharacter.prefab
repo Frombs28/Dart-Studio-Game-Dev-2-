@@ -24,9 +24,25 @@ GameObject:
   - component: {fileID: 135377632878562124}
   - component: {fileID: 114580673964112724}
   - component: {fileID: 54032440925199232}
+  - component: {fileID: 114077003878900366}
   m_Layer: 0
   m_Name: RangedCharacter
   m_TagString: Possessable
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1711349266694144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4242401166537804}
+  m_Layer: 0
+  m_Name: barrel
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38,10 +54,24 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1244648870182938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.06, y: 1.2273995, z: -7.0109334}
+  m_LocalPosition: {x: 16.915882, y: 9.881003, z: -15.602937}
   m_LocalScale: {x: 3, y: 3, z: 3}
-  m_Children: []
+  m_Children:
+  - {fileID: 4242401166537804}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4242401166537804
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1711349266694144}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4023191191838652}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &23666553604656356
@@ -101,6 +131,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &114077003878900366
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1244648870182938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f87c5636cdfb8442bb59f68f6fdb059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire_rate: 1
+  damage: 1
+  cam: {fileID: 0}
+  bullet: {fileID: 1743817910341828, guid: 6af1a404eaa40864abfa34b3b4fd8097, type: 2}
+  barrel: {fileID: 0}
+  bullet_speed: 50
 --- !u!114 &114580673964112724
 MonoBehaviour:
   m_ObjectHideFlags: 1
