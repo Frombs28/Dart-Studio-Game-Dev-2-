@@ -14,7 +14,6 @@ public class CharacterScript : MonoBehaviour
     //public bool amPlayer; //if so, don't receive AI commands
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA, not your personal VIRTUAL CAMERA
 
-
     private int enemyhealth;
 
     public int Enemyhealth

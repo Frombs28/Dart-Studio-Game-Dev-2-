@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-
-    float timer = 0f;
-    public float fire_rate = 1f;
     public int damage = 1;
     public Camera cam;
     public GameObject bullet;
@@ -21,15 +18,10 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= fire_rate && Input.GetButton("Attack"))
-        {
-            timer = 0;
-            fireGun();
-        }
+
     }
 
-    private void fireGun()
+    private void FireGun()
     {
         /*
         //Ray ray = cam.ScreenPointToRay(Input.mousePosition);//creates the ray cast
@@ -44,6 +36,14 @@ public class Gun : MonoBehaviour
               
         //Debug.DrawRay(transform.position, transform.forward * 100, Color.red, 2f);
         */
+        GameObject cur_bullet;
+        cur_bullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        cur_bullet.GetComponent<Rigidbody>().velocity = cam.transform.TransformDirection(Vector3.forward * bullet_speed);
+        cur_bullet.layer = 9;
+    }
+
+    private void FireEnemyGun()
+    {
         GameObject cur_bullet;
         cur_bullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
         cur_bullet.GetComponent<Rigidbody>().velocity = transform.TransformDirection(Vector3.forward * bullet_speed);
