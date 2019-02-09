@@ -8,9 +8,8 @@ using UnityEngine;
 
 public class MeleeCharacterScript : CharacterScript
 {
-   
-
-    //remember to set movespeed in the inspector!
+    
+    //remember to override movespeed in the inspector!
     public override void Attack()
     {
         base.Attack();

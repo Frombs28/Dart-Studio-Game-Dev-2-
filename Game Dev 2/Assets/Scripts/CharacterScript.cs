@@ -29,7 +29,7 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-   
+
 
     private void Start()
     {
@@ -72,10 +72,24 @@ public class CharacterScript : MonoBehaviour
     */
 
     //the virtual stuff that must be overloaded by the subclasses
-    public virtual void Attack() {}
-    public virtual void TraversalAbility() {}
-    public virtual void TakeDamage() {}
-    //public virtual void TakeDamage() => enemyhealth -=1; //compiler error: Feature 'expression bodied members' cannot be used because it is not part of the C# 4.0 language specifications
-    //also you're declaring a fucntion and then trying to de-reference a pointer it returns and then setting setting that to itself minus one???
-    //idk what this line means 
+    public virtual void Attack() { }
+    public virtual void TraversalAbility() { }
+    public virtual void TakeDamage(int damage)
+    {
+        enemyhealth -= damage;
+        print("hey it worked");
+        if (enemyhealth <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void OnCollisionEnter(Collision collider)
+    {
+        if(collider.gameObject.tag == "Projectile")
+        {
+            Destroy(collider.gameObject);
+            TakeDamage(1);
+        }
+    }
 }
