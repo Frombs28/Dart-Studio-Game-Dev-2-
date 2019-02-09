@@ -69,4 +69,13 @@ public class CharacterScript : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    void OnCollisionEnter(Collision collider)
+    {
+        if(collider.gameObject.tag == "Projectile")
+        {
+            Destroy(collider.gameObject);
+            TakeDamage(1);
+        }
+    }
 }
