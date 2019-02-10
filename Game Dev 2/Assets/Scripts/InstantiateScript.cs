@@ -28,7 +28,7 @@ public class InstantiateScript : MonoBehaviour
         if (isPlayer)
         {
             inputManager.SendMessage("AssignPlayer", myCharacter);
-            cam.SendMessage("AssignPlayer", myCharacter);
+            cam.SendMessage("AssignPlayer", myCharacter.transform.GetChild(1).gameObject);
         }
     }
 }

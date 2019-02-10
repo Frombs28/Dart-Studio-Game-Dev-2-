@@ -79,7 +79,7 @@ public class CharacterScript : MonoBehaviour
         print("hey it worked");
         if (enemyhealth <= 0)
         {
-            Destroy(gameObject);
+            Destroy(gameObject,0.1f);
         }
     }
 

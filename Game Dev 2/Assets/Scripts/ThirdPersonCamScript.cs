@@ -62,7 +62,7 @@ public class ThirdPersonCamScript : MonoBehaviour
             transform.position = Vector3.Lerp(startPosition, newlookAtObject.transform.position, t);
             yield return null;
         }
-        lookAtObject = newlookAtObject;
+        lookAtObject = newlookAtObject.transform.GetChild(1).gameObject;
         inputManager.SendMessage("SetReceiveInputTrue");
         transitioning = false;
     }

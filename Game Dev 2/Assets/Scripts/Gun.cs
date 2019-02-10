@@ -40,6 +40,7 @@ public class Gun : MonoBehaviour
         cur_bullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
         cur_bullet.GetComponent<Rigidbody>().velocity = cam.transform.TransformDirection(Vector3.forward * bullet_speed);
         cur_bullet.layer = 9;
+        Destroy(cur_bullet, 10);
     }
 
     private void FireEnemyGun()
