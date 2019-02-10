@@ -43,6 +43,7 @@ public class RangedCharacterScript : CharacterScript
         {
             if (hitInfo.transform == player.transform)
             {
+                gameObject.SendMessage("fireEnemyGun");
                 //shoot the gun code here
             }
         }
