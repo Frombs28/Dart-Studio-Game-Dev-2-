@@ -41,7 +41,7 @@ public class RangedCharacterScript : CharacterScript
         RaycastHit hitInfo;//creates info for thing it hit
         if (Physics.Raycast(ray, out hitInfo, 100))//if it hit something, interact with enemy
         {
-            if (hitInfo.transform == player.transform)
+            if(hitInfo.collider.gameObject.layer == 2)
             {
                 gameObject.SendMessage("fireEnemyGun");
                 //shoot the gun code here
