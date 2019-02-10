@@ -33,7 +33,6 @@ public class InputManagerScript : MonoBehaviour
     public void SetReceiveInputTrue()
     {
         receiveInput = true;
-        //how incrdibly ad hoc
     }
 
     private void Update()

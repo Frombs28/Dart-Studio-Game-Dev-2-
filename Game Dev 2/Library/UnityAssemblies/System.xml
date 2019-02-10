@@ -4,11 +4,14 @@
 		<name>System</name>
 	</assembly>
 	<members>
+		<member name="T:System.Net.NetworkInformation.Ping">
+			<summary>Ping any given IP address (given in dot notation).</summary>
+		</member>
 		<member name="T:System.Diagnostics.Debug">
 			<summary>Class containing methods to ease debugging while developing a game.</summary>
 		</member>
-		<member name="T:System.Net.NetworkInformation.Ping">
-			<summary>Ping any given IP address (given in dot notation).</summary>
+		<member name="T:System.ComponentModel.Component">
+			<summary>Base class for everything attached to GameObjects.</summary>
 		</member>
 		<member name="T:System.ComponentModel.AsyncOperation">
 			<summary>Asynchronous operation coroutine.</summary>
@@ -24,9 +27,6 @@
 		</member>
 		<member name="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String,System.String)">
 			<summary>Assert a condition and logs an error message to the Unity console on failure.</summary>
-		</member>
-		<member name="T:System.ComponentModel.Component">
-			<summary>Base class for everything attached to GameObjects.</summary>
 		</member>
 	</members>
 </doc>
