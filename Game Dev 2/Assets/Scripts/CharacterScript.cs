@@ -10,11 +10,18 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
-    public float moveSpeed; //how fast the character can move //this should be overridden
-    //public bool amPlayer; //if so, don't receive AI commands
-    public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
-    public bool traversalInterrupted = false; //flag set true on collision to stop the character from dashing through a wall or character
+    //public bool amPlayer = false; //do i use the character controller or receive ai commands?
 
+    private CharacterController controller;
+    public Vector3 moveDirection;
+    public bool interruptMovement = false;
+    public bool zeroMovement;
+    public float moveSpeed = 20f; //how fast the character can move //this should be overridden
+    public float jumpSpeed = 50f;
+    public float gravity = 20f;
+    
+    public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
+    
     private int enemyhealth;
 
     public int Enemyhealth
@@ -29,26 +36,38 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-
-
     private void Start()
     {
         //get a reference to the main camera
         //you'll need to do this every time you change cameras in the future
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        controller = GetComponent<CharacterController>();
     }
 
     //movement if this character is possessed by the player
     //this function gets called from InputManager
-    void MovePlayer()
+    public void MovePlayer()
     {
-        Vector3 myVect = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
-        transform.Translate(myVect * moveSpeed * Time.deltaTime);
+        if (controller.isGrounded && !interruptMovement)
+        {
+            zeroMovement = false;
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection *= moveSpeed;
+        }
+    }
+
+    public void JumpPlayer()
+    {
+        if (controller.isGrounded)
+        {
+            moveDirection.y = jumpSpeed;
+        }
     }
 
     //rotation based on camera rotation if this character is possessed by the player
     //this fucntion gets called from InputManager
-    void RotatePlayer()
+    public void RotatePlayer()
     {
         //this isn't perfect but it works for now
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
@@ -56,17 +75,16 @@ public class CharacterScript : MonoBehaviour
 
     //insert a bunch of functions to receive from the AI controller
     //movement if this character is not possessed by the player
-    /*
-    void MoveForwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
-    void MoveBackwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
-    void MoveRight() {transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);}
-    void MoveLeft() {transform.Translate(-Vector3.right * moveSpeed * Time.deltaTime);}
-    void MoveForwardsRight() {transform.Translate(new Vector3(rootTwo, rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveForwardsLeft() {transform.Translate(new Vector3(rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveBackwardsRight() {transform.Translate(new Vector3(-rootTwo, rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveBackwardsLeft() {transform.Translate(new Vector3(-rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    */
+    //have this stuff affect moveDirection and just call move() in update regardless of whether you're the player or not I THINK I DON'T KNOW HOW MUCH WE'RE GONNA USE CHARACTER CONTROLLERS FOR THE AI but rn it seems like a good idea
 
+    private void Update()
+    {
+        if (zeroMovement) { moveDirection = new Vector3(0f, moveDirection.y, 0f); }
+        moveDirection.y -= (gravity * Time.deltaTime);
+        controller.Move(moveDirection * Time.deltaTime);
+        zeroMovement = true;
+    }
+    
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
     public virtual void TraversalAbility() { }
@@ -86,11 +104,6 @@ public class CharacterScript : MonoBehaviour
         {
             Destroy(collider.gameObject);
             TakeDamage(1);
-        }
-        else if (collider.gameObject.tag == "Possessable" || collider.gameObject.tag == "Wall")
-        {
-            Debug.Log("yo was good famsquad");
-            traversalInterrupted = true;
         }
     }
 }
