@@ -191,9 +191,9 @@ MonoBehaviour:
   jumpSpeed: 20
   gravity: 70
   cam: {fileID: 0}
-  dashDistance: 70
+  dashDistance: 45
   dashSpeed: 300
-  dashTime: 0.4
+  dashTime: 0.3
 --- !u!143 &143009072273342218
 CharacterController:
   m_ObjectHideFlags: 1
