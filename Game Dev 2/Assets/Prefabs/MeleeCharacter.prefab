@@ -201,3 +201,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 20
   cam: {fileID: 0}
+  traversalInterrupted: 0
+  dashDistance: 70
+  dashSpeed: 300

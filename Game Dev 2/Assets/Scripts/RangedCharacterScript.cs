@@ -35,7 +35,7 @@ public class RangedCharacterScript : CharacterScript
         float y = transform.position.y;
         //Vector3 newpos = Vector3.MoveTowards(transform.position, player.transform.position, 5*Time.deltaTime);
         //newpos.y = y;
-        transform.LookAt(player.transform); //"player" is not set bc Awake() doesn't work bc the game object is not named player
+        //transform.LookAt(player.transform); //"player" is not set bc Awake() doesn't work bc the game object is not named player
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         Ray ray = new Ray(transform.position, transform.forward);//creates the ray cast
         RaycastHit hitInfo;//creates info for thing it hit
