@@ -43,6 +43,7 @@ public class InputManagerScript : MonoBehaviour
         //player movement
         //if the player is pressing the WASD keys, call a function on the CharacterScript of whatever character the player is controlling
         if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) && player && receiveInput) { player.SendMessage("MovePlayer"); }
+        if (Input.GetButton("Jump") && player && receiveInput) { player.SendMessage("JumpPlayer"); }
         if (player && receiveInput) { player.SendMessage("RotatePlayer"); }
 
         //attack and traversal ability

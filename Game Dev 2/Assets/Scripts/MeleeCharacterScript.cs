@@ -10,7 +10,9 @@ public class MeleeCharacterScript : CharacterScript
 {
     public float dashDistance = 10f;
     public float dashSpeed = 10f;
+    public float dashTime = 0.5f;
     private Vector3 dashDirection;
+    private float dashStartTime;
     private Vector3 startPos;
     //remember to override movespeed in the inspector!
 
@@ -22,8 +24,8 @@ public class MeleeCharacterScript : CharacterScript
     public override void TraversalAbility() //i have a problem in the form of collisions not happening
     {
         base.TraversalAbility();
-        traversalInterrupted = false;
         startPos = transform.position;
+        dashStartTime = Time.time;
         //"flatten" the input axes to be trinarily 1 or 0 or -1 instead of a float between the three
         float myVert = Input.GetAxis("Vertical");
         float myHor = Input.GetAxis("Horizontal");
@@ -45,11 +47,15 @@ public class MeleeCharacterScript : CharacterScript
 
     IEnumerator Dash()
     {
-        while (Vector3.Distance(startPos, transform.position) <= dashDistance && !traversalInterrupted)
+        while (Vector3.Distance(startPos, transform.position) <= dashDistance && (Time.time - dashStartTime) <= dashTime)
         {
-            transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
+            zeroMovement = false;
+            interruptMovement = true;
+            //transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
+            moveDirection = dashDirection * dashSpeed;
+            moveDirection = transform.TransformDirection(moveDirection);
             yield return null;
         }
-        traversalInterrupted = false;
+        interruptMovement = false;
     }
 }
