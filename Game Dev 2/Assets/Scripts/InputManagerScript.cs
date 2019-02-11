@@ -13,6 +13,8 @@ public class InputManagerScript : MonoBehaviour
     public float fire_rate = 1f;
     public float possession_rate = 1.25f;
 
+    public GameObject reticle;
+
     //when the player possesses a character, this is called to set the new character to our variable "player," which is used in turn to call movement functions on whichever character the player is controlling
     //remember to set the old player's layer back to 0 (so it can be hit by raycasts and be possessed) before you call this
     //i would put that in this function but setting up optional arguments is a hassle
@@ -59,6 +61,7 @@ public class InputManagerScript : MonoBehaviour
         if (Input.GetMouseButtonDown(1) && player && receiveInput)
         {
             possess_timer = 0f;
+            reticle.SendMessage("Possessing");
         }
         //if released after enough time has passed, trigger possession
         if(possess_timer >= possession_rate && Input.GetMouseButtonUp(1) && player && receiveInput)
