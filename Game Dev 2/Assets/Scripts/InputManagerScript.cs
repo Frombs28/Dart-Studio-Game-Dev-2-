@@ -47,8 +47,10 @@ public class InputManagerScript : MonoBehaviour
 
         //attack and traversal ability
         //if the player is pressing the appropriate keys, call a function on the CharacterScript of whatever character the player is controlling
+        //if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
+        //else if (Input.GetAxis("TraversalAbility") != 0 && player && receiveInput) { player.SendMessage("TraversalAbility"); }
         if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
-        else if (Input.GetAxis("TraversalAbility") != 0 && player && receiveInput) { player.SendMessage("TraversalAbility"); }
+        if (Input.GetButtonDown("TraversalAbility") && player && receiveInput) { player.SendMessage("TraversalAbility"); }
 
         //possession
         //if (Input.GetAxis("Possess") != 0 && player && !possessing)

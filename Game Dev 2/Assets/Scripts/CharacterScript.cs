@@ -13,6 +13,7 @@ public class CharacterScript : MonoBehaviour
     public float moveSpeed; //how fast the character can move //this should be overridden
     //public bool amPlayer; //if so, don't receive AI commands
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
+    public bool traversalInterrupted = false; //flag set true on collision to stop the character from dashing through a wall or character
 
     private int enemyhealth;
 
@@ -81,10 +82,15 @@ public class CharacterScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collider)
     {
-        if(collider.gameObject.tag == "Projectile")
+        if (collider.gameObject.tag == "Projectile")
         {
             Destroy(collider.gameObject);
             TakeDamage(1);
+        }
+        else if (collider.gameObject.tag == "Possessable" || collider.gameObject.tag == "Wall")
+        {
+            Debug.Log("yo was good famsquad");
+            traversalInterrupted = true;
         }
     }
 }
