@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 //the base character class
 //all character types will inherit from this class
@@ -10,7 +11,13 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
-    //public bool amPlayer = false; //do i use the character controller or receive ai commands?
+    public bool grounded;
+
+    public GameObject player;
+    public bool amPlayer;
+    public GameObject inputManager;
+
+    private NavMeshAgent navAgent;
 
     private CharacterController controller;
     public Vector3 moveDirection;
@@ -36,19 +43,34 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         //get a reference to the main camera
         //you'll need to do this every time you change cameras in the future
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
         controller = GetComponent<CharacterController>();
+        navAgent = GetComponent<NavMeshAgent>();
+        inputManager = GameObject.Find("InputManager");
+    }
+
+    public void AssignPlayer(GameObject myPlayer)
+    {
+        player = myPlayer;
+        amPlayer = (gameObject == player);
+        if (amPlayer)
+        {
+            navAgent.enabled = false;
+        }
+        else { navAgent.enabled = true; }
     }
 
     //movement if this character is possessed by the player
     //this function gets called from InputManager
     public void MovePlayer()
     {
-        if (controller.isGrounded && !interruptMovement)
+        
+        //if (controller.isGrounded && !interruptMovement) //okay so apprently it's never grounded? idk fam //except when i'm pressing a WASD button
+        if (!interruptMovement)
         {
             zeroMovement = false;
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
@@ -79,9 +101,21 @@ public class CharacterScript : MonoBehaviour
 
     private void Update()
     {
+        //debuggin
+        grounded = controller.isGrounded;
+
         if (zeroMovement) { moveDirection = new Vector3(0f, moveDirection.y, 0f); }
         moveDirection.y -= (gravity * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
+
+        if (!amPlayer)
+        {
+            navAgent.SetDestination(player.transform.position);
+            //put some stuff here about firing le gun
+        }
+    }
+    private void LateUpdate()
+    {
         zeroMovement = true;
     }
     
@@ -94,6 +128,7 @@ public class CharacterScript : MonoBehaviour
         print("hey it worked");
         if (enemyhealth <= 0)
         {
+            inputManager.SendMessage("RemoveCharacterFromList", gameObject);
             Destroy(gameObject,0.1f);
         }
     }
