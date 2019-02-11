@@ -8,8 +8,7 @@ using UnityEngine;
 
 public class RangedCharacterScript : CharacterScript
 {
-
-    GameObject player;
+    //GameObject player; //it's already in the base class
 
     //remember to set movespeed in the inspector!
     public override void Attack()
@@ -26,7 +25,7 @@ public class RangedCharacterScript : CharacterScript
     // Use this for initialization
     void Awake()
     {
-        player = GameObject.Find("Player");
+        //player = GameObject.Find("Player");
     }
 
     // Update is called once per frame

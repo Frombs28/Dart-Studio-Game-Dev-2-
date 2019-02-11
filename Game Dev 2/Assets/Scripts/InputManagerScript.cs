@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManagerScript : MonoBehaviour
-{   
+{
+    private List<GameObject> characters = new List<GameObject>();
+
     public GameObject player; //whoms't'd've'ever is possessed rn
     private Camera mainCam; //the main camera in the scene, which should usually be showing the player's POV
     public bool receiveInput = true; //flag //set false by this script when i start possessing; set true by the camera (which sends a message to this) when the transition is complete
@@ -26,6 +28,15 @@ public class InputManagerScript : MonoBehaviour
         player.layer = 2; //ignore raycast //should probably eventually change to custom layer
     }
 
+    public void PopulateCharacterList(GameObject myCharacter)
+    {
+        characters.Add(myCharacter);
+    }
+    public void RemoveCharacterFromList(GameObject myCharacter) //call this from the gameobject when it dies
+    {
+        characters.Remove(myCharacter);
+    }
+
     public void TookDamage() //plz capitalize every word in your function names as per the standard many thank
     {
         playerhealth -= 1;
@@ -45,6 +56,7 @@ public class InputManagerScript : MonoBehaviour
         //player movement
         //if the player is pressing the WASD keys, call a function on the CharacterScript of whatever character the player is controlling
         if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) && player && receiveInput) { player.SendMessage("MovePlayer"); }
+        //if (player && receiveInput) { player.SendMessage("MovePlayer"); }
         if (Input.GetButton("Jump") && player && receiveInput) { player.SendMessage("JumpPlayer"); }
         if (player && receiveInput) { player.SendMessage("RotatePlayer"); }
 
@@ -82,7 +94,12 @@ public class InputManagerScript : MonoBehaviour
                     AssignPlayer(hit.collider.gameObject);
                     //transition the camera
                     mainCam.SendMessage("PossessionTransitionStarter", hit.collider.gameObject);
-                    //call an actual transition once you write one on the camera
+
+                    //for each character, assign the new player
+                    foreach (GameObject character in characters)
+                    {
+                        character.SendMessage("AssignPlayer", hit.collider.gameObject);
+                    }
                 }
             }
         }
