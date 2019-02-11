@@ -185,7 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f14999376f2dee4489a196aba5898d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grounded: 0
   player: {fileID: 0}
+  amPlayer: 0
   inputManager: {fileID: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   interruptMovement: 0
@@ -194,9 +196,9 @@ MonoBehaviour:
   jumpSpeed: 20
   gravity: 70
   cam: {fileID: 0}
-  dashDistance: 45
-  dashSpeed: 300
-  dashTime: 0.3
+  dashDistance: 70
+  dashSpeed: 150
+  dashTime: 0.6
   dashCoolDown: 1
 --- !u!143 &143009072273342218
 CharacterController:

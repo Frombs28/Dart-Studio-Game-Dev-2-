@@ -111,7 +111,12 @@ public class CharacterScript : MonoBehaviour
         if (!amPlayer)
         {
             navAgent.SetDestination(player.transform.position);
+
             //put some stuff here about firing le gun
+            if (Random.Range(0f, 200) <= 1)
+            {
+                gameObject.SendMessage("FireEnemyGun");
+            }
         }
     }
     private void LateUpdate()
