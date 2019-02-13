@@ -15,6 +15,7 @@ public class InputManagerScript : MonoBehaviour
     float possess_timer = 0f;
     public float fire_rate = 1f;
     public float possession_rate = 1.25f;
+    private bool startingPossessing = false; //flag for slomo
 
     public GameObject reticle;
 
@@ -85,7 +86,27 @@ public class InputManagerScript : MonoBehaviour
         {
             possess_timer = 0f;
             reticle.SendMessage("Possessing");
+
+            startingPossessing = true;
         }
+        /*
+        if (Input.GetMouseButtonUp(1) || possess_timer >= possession_rate)
+        {
+            startingPossessing = false;
+        }
+        if (startingPossessing)
+        {
+            Time.timeScale = 0.5f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
+        */
+
+        //ZA WARUDO! TOMARE TOKI WO!
+        //^^^if ya want the slo-mos, un-comment that and also speed up the time it takes to possess someone (possession_rate in this script) and the animation on the reticle (literally just open the animator, select the reticle in the heirarchy, and change "speed" in the animator)
+
         //if released after enough time has passed, trigger possession
         if(possess_timer >= possession_rate && Input.GetMouseButtonUp(1) && player && receiveInput)
         { 
