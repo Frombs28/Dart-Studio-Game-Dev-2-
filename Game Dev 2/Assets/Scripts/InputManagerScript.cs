@@ -15,7 +15,7 @@ public class InputManagerScript : MonoBehaviour
     float timer = 0f;
     float possess_timer = 0f;
     public float fire_rate = 1f;
-    public float possession_rate = 1.25f;
+    public float possession_rate = 0.5f;
     private bool startingPossessing = false; //flag for slomo
     public Slider healthBar;
 

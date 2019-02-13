@@ -102,7 +102,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1408844105495096}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.2351637, y: -1.6307852, z: 75.271935}
+  m_LocalPosition: {x: -0.059691668, y: 39.079105, z: 105.87199}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4474747664256640}
@@ -291,13 +291,14 @@ MonoBehaviour:
   player: {fileID: 0}
   amPlayer: 0
   inputManager: {fileID: 0}
+  controller: {fileID: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   interruptMovement: 0
   zeroMovement: 0
   moveSpeed: 20
   jumpSpeed: 20
   gravity: 70
-  enemyhealth: 0
+  enemyhealth: 3
   enemySpeed: 20
   cam: {fileID: 0}
   dashDistance: 70
@@ -314,7 +315,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 4.24
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
