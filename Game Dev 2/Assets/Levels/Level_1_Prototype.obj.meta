@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< LevelDesign
 guid: a644cfdbacdc0904486c21d3b1aed0e1
+=======
+guid: 0bd1046073054e04dad3090cdd54b7a5
+>>>>>>> Fixed material issue
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
