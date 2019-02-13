@@ -59,7 +59,14 @@ public class MeleeCharacterScript : CharacterScript
             zeroMovement = false;
             interruptMovement = true;
             //transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
-            moveDirection = dashDirection * dashSpeed;
+            if (controller.isGrounded)
+            {
+                moveDirection = dashDirection * dashSpeed;
+            }
+            else
+            {
+                moveDirection = dashDirection * 0.5f * dashSpeed;
+            }
             moveDirection = transform.TransformDirection(moveDirection);
             yield return null;
         }

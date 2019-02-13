@@ -10,6 +10,8 @@ public class InstantiateScript : MonoBehaviour
     public GameObject meleePrefab;
     public GameObject rangedPrefab;
     public GameObject cam; //the main camera //for now just set in the inspector might do it dynamically in a hot sec
+    public GameObject spawns;
+    public int spawn_number = 1;
 
     private GameObject myCharacter; //to be instantiated
 
@@ -18,15 +20,21 @@ public class InstantiateScript : MonoBehaviour
     private void Start()
     {
         //populate the scene with some characters
-        InstantiateCharacter(meleePrefab, new Vector3(0, 2, 0), true);
-
-        InstantiateCharacter(meleePrefab, new Vector3(10, 2, 5), false);
-        InstantiateCharacter(meleePrefab, new Vector3(20, 2, 10), false);
-        InstantiateCharacter(meleePrefab, new Vector3(30, 2, 15), false);
-        InstantiateCharacter(meleePrefab, new Vector3(-10, 2, -5), false);
-        InstantiateCharacter(meleePrefab, new Vector3(-20, 2, -10), false);
-        InstantiateCharacter(meleePrefab, new Vector3(-30, 2, -15), false);
-        InstantiateCharacter(meleePrefab, new Vector3(40, 2, 5), false);
+        for (int i = 0; i < spawn_number; i++)
+        {
+            if (i == 0)
+            {
+                InstantiateCharacter(meleePrefab, 
+                    new Vector3(spawns.transform.GetChild(i).transform.position.x, 
+                    spawns.transform.GetChild(i).transform.position.y, spawns.transform.GetChild(i).transform.position.z), true);
+            }
+            else
+            {
+                InstantiateCharacter(meleePrefab,
+                    new Vector3(spawns.transform.GetChild(i).transform.position.x,
+                    spawns.transform.GetChild(i).transform.position.y, spawns.transform.GetChild(i).transform.position.z), false);
+            }
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

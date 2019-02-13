@@ -19,7 +19,7 @@ public class CharacterScript : MonoBehaviour
 
     private NavMeshAgent navAgent;
 
-    private CharacterController controller;
+    public CharacterController controller;
     public Vector3 moveDirection;
     public bool interruptMovement = false;
     public bool zeroMovement;
@@ -27,10 +27,11 @@ public class CharacterScript : MonoBehaviour
     public float jumpSpeed = 50f;
     public float gravity = 20f;
     int num_jumps = 0;
-    
+    public int enemyhealth = 3;
+    public float enemySpeed = 20f;
+
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
     
-    private int enemyhealth;
 
     public int Enemyhealth
     {
@@ -52,6 +53,7 @@ public class CharacterScript : MonoBehaviour
         controller = GetComponent<CharacterController>();
         navAgent = GetComponent<NavMeshAgent>();
         inputManager = GameObject.Find("InputManager");
+        navAgent.speed = enemySpeed;
     }
 
     public void AssignPlayer(GameObject myPlayer)
@@ -140,7 +142,7 @@ public class CharacterScript : MonoBehaviour
             navAgent.SetDestination(player.transform.position);
 
             //put some stuff here about firing le gun
-            if (Random.Range(0f, 200) <= 1)
+            if (Random.Range(0f, 100) <= 1)
             {
                 gameObject.SendMessage("FireEnemyGun");
             }
@@ -174,15 +176,15 @@ public class CharacterScript : MonoBehaviour
     {
         if (collider.gameObject.tag == "Projectile")
         {
-            Destroy(collider.gameObject);
             if(collider.gameObject.layer == 9)
             {
                 TakeDamage(1);
             }
-            else
+            else if(amPlayer)
             {
                 inputManager.SendMessage("TookDamage");
             }
+            Destroy(collider.gameObject);
         }
     }
 }

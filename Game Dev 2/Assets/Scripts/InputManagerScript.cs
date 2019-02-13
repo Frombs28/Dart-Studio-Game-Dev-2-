@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class InputManagerScript : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class InputManagerScript : MonoBehaviour
     public float fire_rate = 1f;
     public float possession_rate = 1.25f;
     private bool startingPossessing = false; //flag for slomo
+    public Slider healthBar;
 
     public GameObject reticle;
 
@@ -24,40 +26,9 @@ public class InputManagerScript : MonoBehaviour
     //i would put that in this function but setting up optional arguments is a hassle
     //in fact i'll have to do this if we want to call this from anywhere other than here so i'll probably actually do it eventually
     //this function is also called by InstantiateScript to determine who the player is when the scene just starts
-    public void AssignPlayer(GameObject myPlayer)
+    void Start()
     {
-        player = myPlayer;
-        player.layer = 2; //ignore raycast //should probably eventually change to custom layer
-    }
-
-    public void PopulateCharacterList(GameObject myCharacter)
-    {
-        characters.Add(myCharacter);
-    }
-    public void RemoveCharacterFromList(GameObject myCharacter) //call this from the gameobject when it dies
-    {
-        characters.Remove(myCharacter);
-    }
-
-    public void TookDamage() //plz capitalize every word in your function names as per the standard many thank
-    {
-        playerhealth -= 1;
-        if (playerhealth <= 0)
-        {
-            GameOver();
-        }
-        //player.SendMessage("TakeDamage");
-    }
-
-    public void GameOver()
-    {
-        player.SendMessage("Die");
-        SceneManager.LoadScene("GameOver");
-    }
-
-    public void SetReceiveInputTrue()
-    {
-        receiveInput = true;
+        healthBar.value = playerhealth;
     }
 
     private void Update()
@@ -108,14 +79,14 @@ public class InputManagerScript : MonoBehaviour
         //^^^if ya want the slo-mos, un-comment that and also speed up the time it takes to possess someone (possession_rate in this script) and the animation on the reticle (literally just open the animator, select the reticle in the heirarchy, and change "speed" in the animator)
 
         //if released after enough time has passed, trigger possession
-        if(possess_timer >= possession_rate && Input.GetMouseButtonUp(1) && player && receiveInput)
-        { 
+        if (possess_timer >= possession_rate && Input.GetMouseButtonUp(1) && player && receiveInput)
+        {
             //do a raycast from the main camera
             mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
             RaycastHit hit; //this will contain a path to a reference to whatever GameObject got hit
             int layerMask = 1 << 2;
             layerMask = ~layerMask; //the raycast will ignore anything on this layer
-            
+
             if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, Mathf.Infinity, layerMask))
             {
                 if (hit.collider.gameObject.tag == "Possessable")
@@ -141,5 +112,42 @@ public class InputManagerScript : MonoBehaviour
             timer = 0f;
             player.SendMessage("FireGun");
         }
+    }
+
+    public void AssignPlayer(GameObject myPlayer)
+    {
+        player = myPlayer;
+        player.layer = 2; //ignore raycast //should probably eventually change to custom layer
+    }
+
+    public void PopulateCharacterList(GameObject myCharacter)
+    {
+        characters.Add(myCharacter);
+    }
+    public void RemoveCharacterFromList(GameObject myCharacter) //call this from the gameobject when it dies
+    {
+        characters.Remove(myCharacter);
+    }
+
+    public void TookDamage() //plz capitalize every word in your function names as per the standard many thank
+    {
+        playerhealth -= 1;
+        healthBar.value = playerhealth;
+        if (playerhealth <= 0)
+        {
+            GameOver();
+        }
+        //player.SendMessage("TakeDamage");
+    }
+
+    public void GameOver()
+    {
+        player.SendMessage("Die");
+        SceneManager.LoadScene("GameOver");
+    }
+
+    public void SetReceiveInputTrue()
+    {
+        receiveInput = true;
     }
 }

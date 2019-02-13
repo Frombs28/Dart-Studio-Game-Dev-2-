@@ -60,7 +60,7 @@ public class Gun : MonoBehaviour
             GameObject cur_bullet;
             cur_bullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
             cur_bullet.GetComponent<Rigidbody>().velocity = transform.TransformDirection(Vector3.forward * (bullet_speed * 0.5f));
-            Destroy(cur_bullet, 5);
+            Destroy(cur_bullet, 3);
             yield return new WaitForSeconds(burst_rate);
         }
 
