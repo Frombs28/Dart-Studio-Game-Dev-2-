@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
 //spawns characters and assigns virtual cameras to them
 
@@ -28,6 +27,8 @@ public class InstantiateScript : MonoBehaviour
         InstantiateCharacter(meleePrefab, new Vector3(-20, 2, -10), false);
         InstantiateCharacter(meleePrefab, new Vector3(-30, 2, -15), false);
         InstantiateCharacter(meleePrefab, new Vector3(40, 2, 5), false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     //makes a guy

@@ -42,7 +42,7 @@ public class RangedCharacterScript : CharacterScript
         {
             if(hitInfo.collider.gameObject.layer == 2) //hey anthony here, i haven't tested this yet but just want you to know that layer 2 is the default "ignore raycast" layer, sooo . . . if this doesn't work that's why
             {
-                gameObject.SendMessage("fireEnemyGun");
+                gameObject.SendMessage("FireEnemyGun");
                 //shoot the gun code here
             }
         }

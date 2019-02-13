@@ -10,7 +10,7 @@ public class MeleeCharacterScript : CharacterScript
 {
     public float dashDistance = 10f;
     public float dashSpeed = 10f;
-    public float dashTime = 0.5f;
+    public float dashTime = 0.1f;
     public float dashCoolDown = 1f;
     private Vector3 dashDirection;
     private float dashStartTime;
@@ -23,7 +23,6 @@ public class MeleeCharacterScript : CharacterScript
     public override void Attack()
     {
         base.Attack();
-        Debug.Log("melee attack!");
     }
     public override void TraversalAbility() //i have a problem in the form of collisions not happening
     {
@@ -55,7 +54,7 @@ public class MeleeCharacterScript : CharacterScript
 
     IEnumerator Dash()
     {
-        while (Vector3.Distance(startPos, transform.position) <= dashDistance && (Time.time - dashStartTime) <= dashTime)
+        while ((Time.time - dashStartTime) <= dashTime)
         {
             zeroMovement = false;
             interruptMovement = true;
