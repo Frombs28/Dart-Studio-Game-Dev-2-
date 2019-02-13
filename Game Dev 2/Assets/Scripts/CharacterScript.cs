@@ -26,6 +26,7 @@ public class CharacterScript : MonoBehaviour
     public float moveSpeed = 20f; //how fast the character can move //this should be overridden
     public float jumpSpeed = 50f;
     public float gravity = 20f;
+    int num_jumps = 0;
     
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
     
@@ -70,21 +71,29 @@ public class CharacterScript : MonoBehaviour
     {
         
         //if (controller.isGrounded && !interruptMovement) //okay so apprently it's never grounded? idk fam //except when i'm pressing a WASD button
-        if (!interruptMovement)
-        {
-            zeroMovement = false;
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
-            moveDirection = transform.TransformDirection(moveDirection);
-            moveDirection *= moveSpeed;
-        }
+        //if (!interruptMovement && controller.isGrounded)
+        //{
+        //    zeroMovement = false;
+        //    if (moveDirection.y > 0)
+        //    {
+        //        moveDirection.y -= (gravity * Time.deltaTime);
+        //        moveDirection = new Vector3(Input.GetAxis("Horizontal"), moveDirection.y, Input.GetAxis("Vertical")).normalized;
+        //    }
+        //    else
+        //    {
+        //        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+        //    }
+        //    moveDirection = transform.TransformDirection(moveDirection);
+        //    moveDirection *= moveSpeed;
+        //}
     }
 
     public void JumpPlayer()
     {
-        if (controller.isGrounded)
-        {
-            moveDirection.y = jumpSpeed;
-        }
+        //if (controller.isGrounded)
+        //{
+        //    moveDirection.y = jumpSpeed;
+        //}
     }
 
     //rotation based on camera rotation if this character is possessed by the player
@@ -104,6 +113,24 @@ public class CharacterScript : MonoBehaviour
         //debuggin
         grounded = controller.isGrounded;
 
+        if (!interruptMovement && amPlayer)
+        {
+            if (controller.isGrounded)
+            {
+                zeroMovement = false;
+                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+                moveDirection = transform.TransformDirection(moveDirection);
+                moveDirection *= moveSpeed;
+                num_jumps = 0;
+            }
+            if (Input.GetButtonDown("Jump") && num_jumps < 2)
+            {
+                moveDirection.y += jumpSpeed;
+                num_jumps += 1;
+            }
+        }
+
+
         if (zeroMovement) { moveDirection = new Vector3(0f, moveDirection.y, 0f); }
         moveDirection.y -= (gravity * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
@@ -121,7 +148,7 @@ public class CharacterScript : MonoBehaviour
     }
     private void LateUpdate()
     {
-        zeroMovement = true;
+        //zeroMovement = true;
     }
     
     //the virtual stuff that must be overloaded by the subclasses
@@ -133,9 +160,14 @@ public class CharacterScript : MonoBehaviour
         print("hey it worked");
         if (enemyhealth <= 0)
         {
-            inputManager.SendMessage("RemoveCharacterFromList", gameObject);
-            Destroy(gameObject,0.1f);
+            Die();
         }
+    }
+
+    public virtual void Die()
+    {
+        inputManager.SendMessage("RemoveCharacterFromList", gameObject);
+        Destroy(gameObject, 0.1f);
     }
 
     void OnCollisionEnter(Collision collider)
@@ -143,7 +175,14 @@ public class CharacterScript : MonoBehaviour
         if (collider.gameObject.tag == "Projectile")
         {
             Destroy(collider.gameObject);
-            TakeDamage(1);
+            if(collider.gameObject.layer == 9)
+            {
+                TakeDamage(1);
+            }
+            else
+            {
+                inputManager.SendMessage("TookDamage");
+            }
         }
     }
 }

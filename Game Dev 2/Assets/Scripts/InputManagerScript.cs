@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InputManagerScript : MonoBehaviour
 {
@@ -40,7 +41,17 @@ public class InputManagerScript : MonoBehaviour
     public void TookDamage() //plz capitalize every word in your function names as per the standard many thank
     {
         playerhealth -= 1;
-        player.SendMessage("TakeDamage");
+        if (playerhealth <= 0)
+        {
+            GameOver();
+        }
+        //player.SendMessage("TakeDamage");
+    }
+
+    public void GameOver()
+    {
+        player.SendMessage("Die");
+        SceneManager.LoadScene("GameOver");
     }
 
     public void SetReceiveInputTrue()
@@ -55,9 +66,9 @@ public class InputManagerScript : MonoBehaviour
 
         //player movement
         //if the player is pressing the WASD keys, call a function on the CharacterScript of whatever character the player is controlling
-        if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) && player && receiveInput) { player.SendMessage("MovePlayer"); }
+        //if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) && player && receiveInput) { player.SendMessage("MovePlayer"); }
         //if (player && receiveInput) { player.SendMessage("MovePlayer"); }
-        if (Input.GetButton("Jump") && player && receiveInput) { player.SendMessage("JumpPlayer"); }
+        //if (Input.GetButton("Jump") && player && receiveInput) { player.SendMessage("JumpPlayer"); }
         if (player && receiveInput) { player.SendMessage("RotatePlayer"); }
 
         //attack and traversal ability
