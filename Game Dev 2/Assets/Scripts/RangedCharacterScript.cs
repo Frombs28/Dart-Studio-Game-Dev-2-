@@ -8,8 +8,7 @@ using UnityEngine;
 
 public class RangedCharacterScript : CharacterScript
 {
-
-    GameObject player;
+    //GameObject player; //it's already in the base class
 
     //remember to set movespeed in the inspector!
     public override void Attack()
@@ -26,7 +25,7 @@ public class RangedCharacterScript : CharacterScript
     // Use this for initialization
     void Awake()
     {
-        player = GameObject.Find("Player");
+        //player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
@@ -35,7 +34,7 @@ public class RangedCharacterScript : CharacterScript
         float y = transform.position.y;
         //Vector3 newpos = Vector3.MoveTowards(transform.position, player.transform.position, 5*Time.deltaTime);
         //newpos.y = y;
-        transform.LookAt(player.transform); //"player" is not set bc Awake() doesn't work bc the game object is not named player
+        //transform.LookAt(player.transform); //"player" is not set bc Awake() doesn't work bc the game object is not named player
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         Ray ray = new Ray(transform.position, transform.forward);//creates the ray cast
         RaycastHit hitInfo;//creates info for thing it hit
@@ -43,7 +42,7 @@ public class RangedCharacterScript : CharacterScript
         {
             if(hitInfo.collider.gameObject.layer == 2) //hey anthony here, i haven't tested this yet but just want you to know that layer 2 is the default "ignore raycast" layer, sooo . . . if this doesn't work that's why
             {
-                gameObject.SendMessage("fireEnemyGun");
+                gameObject.SendMessage("FireEnemyGun");
                 //shoot the gun code here
             }
         }

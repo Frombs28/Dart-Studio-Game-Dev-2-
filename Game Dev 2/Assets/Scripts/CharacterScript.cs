@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 //the base character class
 //all character types will inherit from this class
@@ -10,10 +11,25 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
-    public float moveSpeed; //how fast the character can move //this should be overridden
-    //public bool amPlayer; //if so, don't receive AI commands
-    public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
+    public bool grounded;
 
+    public GameObject player;
+    public bool amPlayer;
+    public GameObject inputManager;
+
+    private NavMeshAgent navAgent;
+
+    private CharacterController controller;
+    public Vector3 moveDirection;
+    public bool interruptMovement = false;
+    public bool zeroMovement;
+    public float moveSpeed = 20f; //how fast the character can move //this should be overridden
+    public float jumpSpeed = 50f;
+    public float gravity = 20f;
+    int num_jumps = 0;
+    
+    public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
+    
     private int enemyhealth;
 
     public int Enemyhealth
@@ -28,26 +44,61 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-
-
-    private void Start()
+    private void Awake()
     {
         //get a reference to the main camera
         //you'll need to do this every time you change cameras in the future
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        controller = GetComponent<CharacterController>();
+        navAgent = GetComponent<NavMeshAgent>();
+        inputManager = GameObject.Find("InputManager");
+    }
+
+    public void AssignPlayer(GameObject myPlayer)
+    {
+        player = myPlayer;
+        amPlayer = (gameObject == player);
+        if (amPlayer)
+        {
+            navAgent.enabled = false;
+        }
+        else { navAgent.enabled = true; }
     }
 
     //movement if this character is possessed by the player
     //this function gets called from InputManager
-    void MovePlayer()
+    public void MovePlayer()
     {
-        Vector3 myVect = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
-        transform.Translate(myVect * moveSpeed * Time.deltaTime);
+        
+        //if (controller.isGrounded && !interruptMovement) //okay so apprently it's never grounded? idk fam //except when i'm pressing a WASD button
+        //if (!interruptMovement && controller.isGrounded)
+        //{
+        //    zeroMovement = false;
+        //    if (moveDirection.y > 0)
+        //    {
+        //        moveDirection.y -= (gravity * Time.deltaTime);
+        //        moveDirection = new Vector3(Input.GetAxis("Horizontal"), moveDirection.y, Input.GetAxis("Vertical")).normalized;
+        //    }
+        //    else
+        //    {
+        //        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+        //    }
+        //    moveDirection = transform.TransformDirection(moveDirection);
+        //    moveDirection *= moveSpeed;
+        //}
+    }
+
+    public void JumpPlayer()
+    {
+        //if (controller.isGrounded)
+        //{
+        //    moveDirection.y = jumpSpeed;
+        //}
     }
 
     //rotation based on camera rotation if this character is possessed by the player
     //this fucntion gets called from InputManager
-    void RotatePlayer()
+    public void RotatePlayer()
     {
         //this isn't perfect but it works for now
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
@@ -55,17 +106,51 @@ public class CharacterScript : MonoBehaviour
 
     //insert a bunch of functions to receive from the AI controller
     //movement if this character is not possessed by the player
-    /*
-    void MoveForwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
-    void MoveBackwards() {transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
-    void MoveRight() {transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);}
-    void MoveLeft() {transform.Translate(-Vector3.right * moveSpeed * Time.deltaTime);}
-    void MoveForwardsRight() {transform.Translate(new Vector3(rootTwo, rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveForwardsLeft() {transform.Translate(new Vector3(rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveBackwardsRight() {transform.Translate(new Vector3(-rootTwo, rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    void MoveBackwardsLeft() {transform.Translate(new Vector3(-rootTwo, -rootTwo, 0) * moveSpeed * Time.deltaTime);}
-    */
+    //have this stuff affect moveDirection and just call move() in update regardless of whether you're the player or not I THINK I DON'T KNOW HOW MUCH WE'RE GONNA USE CHARACTER CONTROLLERS FOR THE AI but rn it seems like a good idea
 
+    private void Update()
+    {
+        //debuggin
+        grounded = controller.isGrounded;
+
+        if (!interruptMovement && amPlayer)
+        {
+            if (controller.isGrounded)
+            {
+                zeroMovement = false;
+                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+                moveDirection = transform.TransformDirection(moveDirection);
+                moveDirection *= moveSpeed;
+                num_jumps = 0;
+            }
+            if (Input.GetButtonDown("Jump") && num_jumps < 2)
+            {
+                moveDirection.y += jumpSpeed;
+                num_jumps += 1;
+            }
+        }
+
+
+        if (zeroMovement) { moveDirection = new Vector3(0f, moveDirection.y, 0f); }
+        moveDirection.y -= (gravity * Time.deltaTime);
+        controller.Move(moveDirection * Time.deltaTime);
+
+        if (!amPlayer)
+        {
+            navAgent.SetDestination(player.transform.position);
+
+            //put some stuff here about firing le gun
+            if (Random.Range(0f, 200) <= 1)
+            {
+                gameObject.SendMessage("FireEnemyGun");
+            }
+        }
+    }
+    private void LateUpdate()
+    {
+        //zeroMovement = true;
+    }
+    
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
     public virtual void TraversalAbility() { }
@@ -75,16 +160,29 @@ public class CharacterScript : MonoBehaviour
         print("hey it worked");
         if (enemyhealth <= 0)
         {
-            Destroy(gameObject,0.1f);
+            Die();
         }
+    }
+
+    public virtual void Die()
+    {
+        inputManager.SendMessage("RemoveCharacterFromList", gameObject);
+        Destroy(gameObject, 0.1f);
     }
 
     void OnCollisionEnter(Collision collider)
     {
-        if(collider.gameObject.tag == "Projectile")
+        if (collider.gameObject.tag == "Projectile")
         {
             Destroy(collider.gameObject);
-            TakeDamage(1);
+            if(collider.gameObject.layer == 9)
+            {
+                TakeDamage(1);
+            }
+            else
+            {
+                inputManager.SendMessage("TookDamage");
+            }
         }
     }
 }
