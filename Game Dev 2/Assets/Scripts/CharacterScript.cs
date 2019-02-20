@@ -100,7 +100,7 @@ public class CharacterScript : MonoBehaviour
 
     //rotation based on camera rotation if this character is possessed by the player
     //this fucntion gets called from InputManager
-    public void RotatePlayer()
+    public virtual void RotatePlayer()
     {
         //this isn't perfect but it works for now
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
@@ -137,16 +137,16 @@ public class CharacterScript : MonoBehaviour
         moveDirection.y -= (gravity * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
 
-        if (!amPlayer)
-        {
-            navAgent.SetDestination(player.transform.position);
+        //if (!amPlayer)
+        //{
+        //    navAgent.SetDestination(player.transform.position);
 
-            //put some stuff here about firing le gun
-            if (Random.Range(0f, 100) <= 1)
-            {
-                gameObject.SendMessage("FireEnemyGun");
-            }
-        }
+        //    //put some stuff here about firing le gun
+        //    if (Random.Range(0f, 100) <= 1)
+        //    {
+        //        gameObject.SendMessage("FireEnemyGun");
+        //    }
+        //}
     }
     private void LateUpdate()
     {
@@ -155,11 +155,12 @@ public class CharacterScript : MonoBehaviour
     
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
+    public virtual bool IsCharging() { return false; }
     public virtual void TraversalAbility() { }
+    public virtual void Ability() { }
     public virtual void TakeDamage(int damage)
     {
         enemyhealth -= damage;
-        print("hey it worked");
         if (enemyhealth <= 0)
         {
             Die();
@@ -169,7 +170,7 @@ public class CharacterScript : MonoBehaviour
     public virtual void Die()
     {
         inputManager.SendMessage("RemoveCharacterFromList", gameObject);
-        Destroy(gameObject, 0.1f);
+        Destroy(gameObject, 0.01f);
     }
 
     void OnCollisionEnter(Collision collider)
@@ -185,6 +186,24 @@ public class CharacterScript : MonoBehaviour
                 inputManager.SendMessage("TookDamage");
             }
             Destroy(collider.gameObject);
+        }
+        if(collider.gameObject.layer == 2)
+        {
+            collider.gameObject.SendMessage("IsCharging", gameObject);
+            if (collider.gameObject.GetComponent<RangedCharacterScript>())
+            {
+                if (collider.gameObject.GetComponent<RangedCharacterScript>().IsCharging())
+                {
+                    if (!amPlayer)
+                    {
+                        TakeDamage(6);
+                    }
+                }
+            }
+        }
+        if(gameObject.GetComponent<RangedCharacterScript>() && collider.gameObject.tag != "Possessable" && collider.gameObject.tag != "Proejectile")
+        {
+            gameObject.SendMessage("StopCharging");
         }
     }
 }

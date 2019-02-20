@@ -884,7 +884,7 @@ Prefab:
         type: 2}
       propertyPath: rangedPrefab
       value: 
-      objectReference: {fileID: 1244648870182938, guid: ce04d78ac048b87498176fa69bd088c2,
+      objectReference: {fileID: 1699993314130230, guid: 60e1ae336deb98a4092ef834cd0e8383,
         type: 2}
     - target: {fileID: 114505133328061138, guid: 4d98a8263b0b0b6419dacdbfc10c4722,
         type: 2}

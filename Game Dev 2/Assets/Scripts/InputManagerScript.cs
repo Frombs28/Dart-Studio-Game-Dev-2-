@@ -49,6 +49,7 @@ public class InputManagerScript : MonoBehaviour
         //else if (Input.GetAxis("TraversalAbility") != 0 && player && receiveInput) { player.SendMessage("TraversalAbility"); }
         if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
         if (Input.GetButtonDown("TraversalAbility") && player && receiveInput) { player.SendMessage("TraversalAbility"); }
+        if (Input.GetButtonDown("Ability") && player && receiveInput) { player.SendMessage("Ability"); }
 
         //possession
         //if (Input.GetAxis("Possess") != 0 && player && !possessing)

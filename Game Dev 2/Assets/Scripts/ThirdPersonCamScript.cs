@@ -71,8 +71,8 @@ public class ThirdPersonCamScript : MonoBehaviour
     {
         if (!transitioning)
         {
-            currentX += Input.GetAxis("Mouse X");
-            currentY += Input.GetAxis("Mouse Y");
+            currentX += Input.GetAxis("Mouse X") * sensitivityX;
+            currentY += Input.GetAxis("Mouse Y") * sensitivityY;
             currentY = Mathf.Clamp(currentY, minY, maxY);
         }
     }
@@ -100,5 +100,17 @@ public class ThirdPersonCamScript : MonoBehaviour
             */
             transform.LookAt(lookAtTransform);
         }
+    }
+
+    void ChargeCam()
+    {
+        sensitivityX = 0.5f;
+        sensitivityY = 0.5f;
+    }
+
+    void NormCam()
+    {
+        sensitivityX = 4f;
+        sensitivityY = 4f;
     }
 }

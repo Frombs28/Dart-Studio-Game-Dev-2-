@@ -49,7 +49,6 @@ public class Gun : MonoBehaviour
     private void FireEnemyGun()
     {
         StartCoroutine("FireBurst");
-        print("Fire!");
         i = 0;
     }
 
