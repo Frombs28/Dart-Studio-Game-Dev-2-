@@ -8,59 +8,118 @@ using UnityEngine;
 
 public class RangedCharacterScript : CharacterScript
 {
-    //GameObject player; //it's already in the base class
+    public float dashDistance = 10f;
+    public float dashSpeed = 2f;
+    public float dashTime = 1f;
+    public float dashCoolDown = 3f;
+    private Vector3 dashDirection;
+    private float dashStartTime;
+    private float dashEndTime = 0f;
+    private Vector3 startPos;
 
-    //remember to set movespeed in the inspector!
+    public float shieldTime = 3f;
+    public float shieldCoolDown = 6f;
+    public float shieldSpeed = 4f;
+    private float shieldStartTime;
+    private float shieldEndTime = 0f;
+
+    private bool dashing = false;
+    //remember to override movespeed in the inspector!
+
     public override void Attack()
     {
-        base.Attack();
-        Debug.Log("ranged attack!");
-    }
-    public override void TraversalAbility()
-    {
-        base.TraversalAbility();
-        Debug.Log("ranged traversal!");
+        gameObject.SendMessage("FireShortGun");
     }
 
-    // Use this for initialization
-    void Awake()
+    public override float TraversalMaxTime()
     {
-        //player = GameObject.Find("Player");
+        return dashCoolDown;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    public override float AbilityMaxTime()
     {
-        float y = transform.position.y;
-        //Vector3 newpos = Vector3.MoveTowards(transform.position, player.transform.position, 5*Time.deltaTime);
-        //newpos.y = y;
-        //transform.LookAt(player.transform); //"player" is not set bc Awake() doesn't work bc the game object is not named player
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        Ray ray = new Ray(transform.position, transform.forward);//creates the ray cast
-        RaycastHit hitInfo;//creates info for thing it hit
-        if (Physics.Raycast(ray, out hitInfo, 100))//if it hit something, interact with enemy
+        return shieldCoolDown;
+    }
+
+    public override void TraversalAbility() //i have a problem in the form of collisions not happening
+    {
+        if ((Time.time - dashEndTime) >= dashCoolDown && !dashing && controller.isGrounded)
         {
-            if(hitInfo.collider.gameObject.layer == 2) //hey anthony here, i haven't tested this yet but just want you to know that layer 2 is the default "ignore raycast" layer, sooo . . . if this doesn't work that's why
+            dashing = true;
+            startPos = transform.position;
+            dashStartTime = Time.time;
+            dashDirection = new Vector3(0, 0, 1);
+            Vector3.Normalize(dashDirection);
+            cam.SendMessage("ChargeCam");
+            inputManager.SendMessage("RechargeTraversal");
+            StartCoroutine("Charge");
+        }
+    }
+
+    public override void Ability()
+    {
+        if ((Time.time - shieldEndTime) >= shieldCoolDown && controller.isGrounded)
+        {
+            shieldStartTime = Time.time;
+            inputManager.SendMessage("RechargeAbility");
+            StartCoroutine("Shield");
+        }
+    }
+
+    public override bool IsCharging()
+    {
+        Debug.Log(dashing);
+        return dashing;
+    }
+
+    void StopCharging()
+    {
+        StopCoroutine("Charge");
+        interruptMovement = false;
+        cam.SendMessage("NormCam");
+        dashEndTime = Time.time;
+        dashing = false;
+    }
+
+    IEnumerator Charge()
+    {
+        while ((Time.time - dashStartTime) <= dashTime)
+        {
+            invincible = true;
+            zeroMovement = false;
+            interruptMovement = true;
+            //transform.Translate(dashDirection * dashSpeed * Time.deltaTime);
+            moveDirection = dashDirection * dashSpeed;
+            moveDirection = transform.TransformDirection(moveDirection);
+            yield return null;
+        }
+        interruptMovement = false;
+        cam.SendMessage("NormCam");
+        dashEndTime = Time.time;
+        dashing = false;
+    }
+
+    IEnumerator Shield()
+    {
+        while ((Time.time - shieldStartTime) <= shieldTime)
+        {
+            invincible = true;
+            interruptMovement = true;
+            if (controller.isGrounded)
             {
-                gameObject.SendMessage("FireEnemyGun");
-                //shoot the gun code here
+                zeroMovement = false;
+                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+                moveDirection = transform.TransformDirection(moveDirection);
+                moveDirection *= shieldSpeed;
             }
+            if (Input.GetButtonDown("Jump") && controller.isGrounded)
+            {
+                moveDirection.y += jumpSpeed;
+            }
+            yield return null;
         }
-        //transform.position = newpos;
-
+        interruptMovement = false;
+        shieldEndTime = Time.time;
+        Debug.Log("Done Shielding!");
     }
-    /* will use knockback if needed
-    public void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.gameObject.GetComponent<CharacterScript>().TakeDamage(40);
-            Vector3 diff = transform.position - collision.gameObject.transform.position;
-            diff.Normalize();
-            diff.y = 0;
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(-3000*diff);
-        }
-    }
-    */
-   
 }
