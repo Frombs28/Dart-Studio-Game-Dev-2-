@@ -16,14 +16,31 @@ public class MeleeCharacterScript : CharacterScript
     private float dashStartTime;
     private float dashEndTime = 0;
     private Vector3 startPos;
+    //change phase times when were ready to incorporate this
+    public float phaseTime = 3f;
+    public float phaseCoolDown = 6f;
+    public float phaseSpeed = 4f;
+    private float phaseStartTime;
+    private float phaseEndTime = 0f;
 
     private bool dashing = false;
     //remember to override movespeed in the inspector!
 
     public override void Attack()
     {
-        base.Attack();
+        gameObject.SendMessage("FireRifleGun");
     }
+
+    public override float TraversalMaxTime()
+    {
+        return dashCoolDown;
+    }
+
+    public override float AbilityMaxTime()
+    {
+        return phaseCoolDown;
+    }
+
     public override void TraversalAbility() //i have a problem in the form of collisions not happening
     {
         if ((Time.time - dashEndTime) >= dashCoolDown && !dashing)
@@ -48,6 +65,7 @@ public class MeleeCharacterScript : CharacterScript
             if (myVert == 0 && myHor == 0) { myVert = 1; }
             dashDirection = new Vector3(myHor, 0, myVert);
             Vector3.Normalize(dashDirection);
+            inputManager.SendMessage("RechargeTraversal");
             StartCoroutine("Dash");
         }
     }

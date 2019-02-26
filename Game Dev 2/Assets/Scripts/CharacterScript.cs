@@ -29,9 +29,10 @@ public class CharacterScript : MonoBehaviour
     int num_jumps = 0;
     public int enemyhealth = 3;
     public float enemySpeed = 20f;
+    public bool invincible = false;
 
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
-    
+
 
     public int Enemyhealth
     {
@@ -71,7 +72,7 @@ public class CharacterScript : MonoBehaviour
     //this function gets called from InputManager
     public void MovePlayer()
     {
-        
+
         //if (controller.isGrounded && !interruptMovement) //okay so apprently it's never grounded? idk fam //except when i'm pressing a WASD button
         //if (!interruptMovement && controller.isGrounded)
         //{
@@ -152,12 +153,14 @@ public class CharacterScript : MonoBehaviour
     {
         //zeroMovement = true;
     }
-    
+
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
     public virtual bool IsCharging() { return false; }
     public virtual void TraversalAbility() { }
     public virtual void Ability() { }
+    public virtual float TraversalMaxTime() { return 0f; }
+    public virtual float AbilityMaxTime() { return 0f; }
     public virtual void TakeDamage(int damage)
     {
         enemyhealth -= damage;
@@ -175,19 +178,19 @@ public class CharacterScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collider)
     {
-        if (collider.gameObject.tag == "Projectile")
+        if (collider.gameObject.tag == "Projectile" && !invincible)
         {
-            if(collider.gameObject.layer == 9)
+            if (collider.gameObject.layer == 9)
             {
                 TakeDamage(1);
             }
-            else if(amPlayer)
+            else if (amPlayer)
             {
                 inputManager.SendMessage("TookDamage");
             }
             Destroy(collider.gameObject);
         }
-        if(collider.gameObject.layer == 2)
+        if (collider.gameObject.layer == 2 && !invincible)
         {
             collider.gameObject.SendMessage("IsCharging", gameObject);
             if (collider.gameObject.GetComponent<RangedCharacterScript>())
@@ -201,7 +204,7 @@ public class CharacterScript : MonoBehaviour
                 }
             }
         }
-        if(gameObject.GetComponent<RangedCharacterScript>() && collider.gameObject.tag != "Possessable" && collider.gameObject.tag != "Proejectile")
+        if (gameObject.GetComponent<RangedCharacterScript>() && collider.gameObject.tag != "Possessable" && collider.gameObject.tag != "Proejectile")
         {
             gameObject.SendMessage("StopCharging");
         }

@@ -11,13 +11,17 @@ public class InputManagerScript : MonoBehaviour
     public GameObject player; //whoms't'd've'ever is possessed rn
     private Camera mainCam; //the main camera in the scene, which should usually be showing the player's POV
     public bool receiveInput = true; //flag //set false by this script when i start possessing; set true by the camera (which sends a message to this) when the transition is complete
-    private int playerhealth=10;
+    private int playerhealth = 10;
     float timer = 0f;
     float possess_timer = 0f;
     public float fire_rate = 1f;
     public float possession_rate = 0.5f;
     private bool startingPossessing = false; //flag for slomo
     public Slider healthBar;
+    public Slider movementBar;
+    public Slider abilityBar;
+    float traversalRechargeStartTime;
+    float abilityRechargeStartTime;
 
     public GameObject reticle;
 
@@ -29,12 +33,32 @@ public class InputManagerScript : MonoBehaviour
     void Start()
     {
         healthBar.value = playerhealth;
+        movementBar.maxValue = player.gameObject.GetComponent<CharacterScript>().TraversalMaxTime();
+        abilityBar.maxValue = player.gameObject.GetComponent<CharacterScript>().AbilityMaxTime();
+        traversalRechargeStartTime = 0f;
+        abilityRechargeStartTime = 0f;
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
         possess_timer += Time.deltaTime;
+        if (Time.deltaTime - traversalRechargeStartTime < movementBar.maxValue)
+        {
+            movementBar.value = Time.deltaTime - traversalRechargeStartTime;
+        }
+        else
+        {
+            movementBar.value = movementBar.maxValue;
+        }
+        if (Time.deltaTime - abilityRechargeStartTime < abilityBar.maxValue)
+        {
+            abilityBar.value = Time.deltaTime - abilityRechargeStartTime;
+        }
+        else
+        {
+            abilityBar.value = abilityBar.maxValue;
+        }
 
         //player movement
         //if the player is pressing the WASD keys, call a function on the CharacterScript of whatever character the player is controlling
@@ -47,7 +71,7 @@ public class InputManagerScript : MonoBehaviour
         //if the player is pressing the appropriate keys, call a function on the CharacterScript of whatever character the player is controlling
         //if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
         //else if (Input.GetAxis("TraversalAbility") != 0 && player && receiveInput) { player.SendMessage("TraversalAbility"); }
-        if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
+        //if (Input.GetAxis("Attack") != 0 && player && receiveInput) { player.SendMessage("Attack"); }
         if (Input.GetButtonDown("TraversalAbility") && player && receiveInput) { player.SendMessage("TraversalAbility"); }
         if (Input.GetButtonDown("Ability") && player && receiveInput) { player.SendMessage("Ability"); }
 
@@ -96,6 +120,8 @@ public class InputManagerScript : MonoBehaviour
                     //set the player to the new character
                     player.layer = 0; //i would put this in AssignPlayer but it's a hassle so do it here
                     AssignPlayer(hit.collider.gameObject);
+                    movementBar.maxValue = player.gameObject.GetComponent<CharacterScript>().TraversalMaxTime();
+                    abilityBar.maxValue = player.gameObject.GetComponent<CharacterScript>().AbilityMaxTime();
                     //transition the camera
                     mainCam.SendMessage("PossessionTransitionStarter", hit.collider.gameObject);
 
@@ -111,7 +137,7 @@ public class InputManagerScript : MonoBehaviour
         if (timer >= fire_rate && Input.GetButton("Attack"))
         {
             timer = 0f;
-            player.SendMessage("FireGun");
+            player.SendMessage("Attack");
         }
     }
 
@@ -150,5 +176,15 @@ public class InputManagerScript : MonoBehaviour
     public void SetReceiveInputTrue()
     {
         receiveInput = true;
+    }
+
+    void RechargeTraversal()
+    {
+        traversalRechargeStartTime = Time.deltaTime;
+    }
+
+    void RechargeAbility()
+    {
+        abilityRechargeStartTime = Time.deltaTime;
     }
 }
