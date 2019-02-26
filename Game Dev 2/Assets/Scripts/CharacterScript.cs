@@ -19,7 +19,7 @@ public class CharacterScript : MonoBehaviour
 
     private NavMeshAgent navAgent;
 
-    private CharacterController controller;
+    public CharacterController controller;
     public Vector3 moveDirection;
     public bool interruptMovement = false;
     public bool zeroMovement;
@@ -27,10 +27,12 @@ public class CharacterScript : MonoBehaviour
     public float jumpSpeed = 50f;
     public float gravity = 20f;
     int num_jumps = 0;
-    
+    public int enemyhealth = 3;
+    public float enemySpeed = 20f;
+    public bool invincible = false;
+
     public Camera cam; //player character rotation is based on camera rotation //this is the MAIN CAMERA,  *not*  your personal VIRTUAL CAMERA
-    
-    private int enemyhealth;
+
 
     public int Enemyhealth
     {
@@ -52,6 +54,7 @@ public class CharacterScript : MonoBehaviour
         controller = GetComponent<CharacterController>();
         navAgent = GetComponent<NavMeshAgent>();
         inputManager = GameObject.Find("InputManager");
+        navAgent.speed = enemySpeed;
     }
 
     public void AssignPlayer(GameObject myPlayer)
@@ -69,7 +72,7 @@ public class CharacterScript : MonoBehaviour
     //this function gets called from InputManager
     public void MovePlayer()
     {
-        
+
         //if (controller.isGrounded && !interruptMovement) //okay so apprently it's never grounded? idk fam //except when i'm pressing a WASD button
         //if (!interruptMovement && controller.isGrounded)
         //{
@@ -98,7 +101,7 @@ public class CharacterScript : MonoBehaviour
 
     //rotation based on camera rotation if this character is possessed by the player
     //this fucntion gets called from InputManager
-    public void RotatePlayer()
+    public virtual void RotatePlayer()
     {
         //this isn't perfect but it works for now
         transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
@@ -135,29 +138,32 @@ public class CharacterScript : MonoBehaviour
         moveDirection.y -= (gravity * Time.deltaTime);
         controller.Move(moveDirection * Time.deltaTime);
 
-        if (!amPlayer)
-        {
-            navAgent.SetDestination(player.transform.position);
+        //if (!amPlayer)
+        //{
+        //    navAgent.SetDestination(player.transform.position);
 
-            //put some stuff here about firing le gun
-            if (Random.Range(0f, 200) <= 1)
-            {
-                gameObject.SendMessage("FireEnemyGun");
-            }
-        }
+        //    //put some stuff here about firing le gun
+        //    if (Random.Range(0f, 100) <= 1)
+        //    {
+        //        gameObject.SendMessage("FireEnemyGun");
+        //    }
+        //}
     }
     private void LateUpdate()
     {
         //zeroMovement = true;
     }
-    
+
     //the virtual stuff that must be overloaded by the subclasses
     public virtual void Attack() { }
+    public virtual bool IsCharging() { return false; }
     public virtual void TraversalAbility() { }
+    public virtual void Ability() { }
+    public virtual float TraversalMaxTime() { return 0f; }
+    public virtual float AbilityMaxTime() { return 0f; }
     public virtual void TakeDamage(int damage)
     {
         enemyhealth -= damage;
-        print("hey it worked");
         if (enemyhealth <= 0)
         {
             Die();
@@ -167,22 +173,40 @@ public class CharacterScript : MonoBehaviour
     public virtual void Die()
     {
         inputManager.SendMessage("RemoveCharacterFromList", gameObject);
-        Destroy(gameObject, 0.1f);
+        Destroy(gameObject, 0.01f);
     }
 
     void OnCollisionEnter(Collision collider)
     {
-        if (collider.gameObject.tag == "Projectile")
+        if (collider.gameObject.tag == "Projectile" && !invincible)
         {
-            Destroy(collider.gameObject);
-            if(collider.gameObject.layer == 9)
+            if (collider.gameObject.layer == 9)
             {
                 TakeDamage(1);
             }
-            else
+            else if (amPlayer)
             {
                 inputManager.SendMessage("TookDamage");
             }
+            Destroy(collider.gameObject);
+        }
+        if (collider.gameObject.layer == 2 && !invincible)
+        {
+            collider.gameObject.SendMessage("IsCharging", gameObject);
+            if (collider.gameObject.GetComponent<RangedCharacterScript>())
+            {
+                if (collider.gameObject.GetComponent<RangedCharacterScript>().IsCharging())
+                {
+                    if (!amPlayer)
+                    {
+                        TakeDamage(6);
+                    }
+                }
+            }
+        }
+        if (gameObject.GetComponent<RangedCharacterScript>() && collider.gameObject.tag != "Possessable" && collider.gameObject.tag != "Proejectile")
+        {
+            gameObject.SendMessage("StopCharging");
         }
     }
 }
